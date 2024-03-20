@@ -32,15 +32,39 @@ function App() {
         setTodos([...todos, response.data]);
       })
       .catch(error => console.error('Error adding todo', error));
-  }
+    };
+
+    const handleDelete = (id) => {
+      axios.delete(`http://localhost/api/tasks/index/${id}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(() => {
+        setTodos(todos.filter(todo => todo.id !== id));
+      })
+      .catch(error => console.error('Error deleting todo', error));
+    };
+
   return (
   <div>
     <h1 className='text-blue-400 text-2xl font-black my-2 ml-2'>ToDo List</h1>
     <Form addTodoItem={ addTodoItem }/>
     <ul className=''>
       {todos.map(todo => (
-        <li key={todo.id} className='font-black'>{todo.title}</li>
-      ))}
+        <li
+          key={todo.id} className='my-1'
+          >
+          {todo.title}
+          <button
+            onClick={() => handleDelete(todo.id)}
+            className="ml-2 font-black bg-red-400 py-1 px-4 text-white rounded-sm text-sm"
+          >
+            削除
+          </button>
+        </li>
+        )
+      )}
     </ul>
   </div>
   );
