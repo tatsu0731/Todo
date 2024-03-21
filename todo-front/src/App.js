@@ -46,6 +46,23 @@ function App() {
       .catch(error => console.error('Error deleting todo', error));
     };
 
+    const handleUpdate = (id) => {
+      axios.patch(`http://localhost/api/tasks/index/${id}`, {
+        is_done: 1
+      },{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => {
+        setTodos(todos.map(todo => todo.id === id ? {...todo, is_done:1} : todo));
+        console.log('Todo marked as done', response.data);
+      })
+      .catch(error => console.error('Error marking todo as done', error));
+    };
+
+    // const handleStyles = todos.is_done !== 0 ? 'my-1 line-through' : 'my-1';
+
   return (
   <div>
     <h1 className='text-blue-400 text-2xl font-black my-2 ml-2'>ToDo List</h1>
@@ -53,9 +70,15 @@ function App() {
     <ul className=''>
       {todos.map(todo => (
         <li
-          key={todo.id} className='my-1'
+          key={todo.id} className={ todo.is_done !== 0 ? 'my-1 line-through' : 'my-1' }
           >
           {todo.title}
+          <button
+            onClick={() => handleUpdate(todo.id)}
+            className="ml-2 font-black bg-yellow-400 py-1 px-4 text-white rounded-sm text-sm"
+          >
+            完了
+          </button>
           <button
             onClick={() => handleDelete(todo.id)}
             className="ml-2 font-black bg-red-400 py-1 px-4 text-white rounded-sm text-sm"
